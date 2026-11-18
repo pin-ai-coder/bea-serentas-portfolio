@@ -1,12 +1,182 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <title>Page Title</title>
-    <link rel='stylesheet' href='main.css'>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio – Your Name</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --ink:#2b2d42; --muted:#6b6f85; --card:#ffffff; --line:#e6e3f2;
+  --purple:#7b68ee; --pink:#fd71af; --blue:#49ccf9; --orange:#f58a07; --yellow:#ffc800; --green:#2dc98a;
+  --tint-purple:#efecff; --tint-pink:#ffeaf4; --tint-blue:#e3f7fe; --tint-orange:#fff1de; --tint-green:#e1f8ef; --tint-yellow:#fff7d6;
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17172a; --ink:#f1f0fb; --muted:#a9abc4; --card:#20203a; --line:#37375a;
+  --tint-purple:#2b2850; --tint-pink:#42223a; --tint-blue:#1c3444; --tint-orange:#41301a; --tint-green:#1b3a33; --tint-yellow:#41391a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#17172a; --ink:#f1f0fb; --muted:#a9abc4; --card:#20203a; --line:#37375a;
+  --tint-purple:#2b2850; --tint-pink:#42223a; --tint-blue:#1c3444; --tint-orange:#41301a; --tint-green:#1b3a33; --tint-yellow:#41391a; color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",system-ui,sans-serif;line-height:1.6;font-size:17px}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:2px dotted var(--line);padding-top:env(safe-area-inset-top,0px)}
+nav .wrap{display:flex;gap:6px;align-items:center;justify-content:space-between;height:58px;overflow-x:auto}
+nav b{font-weight:900;font-size:20px;white-space:nowrap}
+nav .links{display:flex;gap:4px}
+nav a.l{text-decoration:none;font-weight:700;font-size:15px;padding:6px 14px;border-radius:99px;white-space:nowrap;color:var(--muted)}
+nav a.l:hover,nav a.l:focus-visible{background:var(--tint-purple);color:var(--purple);outline:none}
+
+/* hero: cover-of-the-book composition */
+.hero{padding:44px 0 30px}
+.icons{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;text-align:center;font-size:13px;color:var(--muted);font-weight:600}
+.icons span{display:block;font-size:34px;line-height:1.2}
+.title-box{border:3px solid var(--purple);border-radius:22px;padding:26px 24px 0;margin:22px 0;text-align:center;overflow:hidden}
+.rainbow{font-size:clamp(46px,11vw,128px);font-weight:900;line-height:.95;margin:0;letter-spacing:-2px;
+  background:linear-gradient(90deg,#fd71af,#f58a07 22%,#ffc800 40%,#2dc98a 58%,#49ccf9 78%,#7b68ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:14px -24px 0;background:var(--purple);color:#fff;font-weight:900;font-size:clamp(18px,3.4vw,30px);padding:14px 20px}
+.tag{text-align:center;font-weight:700;color:var(--muted);margin:0 0 20px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;text-decoration:none;font-weight:800;padding:12px 24px;border-radius:12px;border:2px solid var(--purple)}
+.btn.fill{background:var(--purple);color:#fff}
+.btn:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* section header: orange number tab + light title */
+section{padding:46px 0}
+.sh{display:flex;align-items:center;gap:0;margin-bottom:22px}
+.sh i{font-style:normal;background:var(--orange);color:#fff;font-weight:700;font-size:30px;padding:2px 16px;border-radius:0 0 12px 0;margin-left:-20px;padding-left:34px}
+.sh h2{margin:0 0 0 16px;font-size:clamp(28px,5vw,40px);font-weight:600;letter-spacing:-.5px}
+.panel{border:2px solid var(--orange);border-radius:18px;padding:22px;background:var(--card)}
+.panel h3{margin:0 0 14px;font-size:15px;font-weight:800;color:var(--orange)}
+.dots{border:0;border-top:2px dotted var(--line);margin:18px 0}
+
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g5{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.about{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+@media(max-width:760px){.about{grid-template-columns:1fr}.icons{grid-template-columns:repeat(3,1fr)}}
+.stat{border-radius:16px;padding:16px;text-align:center}
+.stat b{display:block;font-size:40px;font-weight:900;line-height:1.1}
+.stat small{font-weight:700;color:var(--muted)}
+.p{background:var(--tint-purple)}.k{background:var(--tint-pink)}.b{background:var(--tint-blue)}.o{background:var(--tint-orange)}.gr{background:var(--tint-green)}.y{background:var(--tint-yellow)}
+
+/* skills: labeled icon tiles like the book */
+.tile{text-align:center;font-weight:700;font-size:14px}
+.tile div{height:84px;display:grid;place-items:center;font-size:38px;border-radius:16px;margin-bottom:6px}
+
+/* projects: infographic cards */
+.proj{border-radius:20px;border:2px solid var(--line);background:var(--card);overflow:hidden;display:flex;flex-direction:column}
+.proj .top{padding:18px;font-size:44px;line-height:1}
+.proj .body{padding:6px 18px 18px;flex:1;display:flex;flex-direction:column}
+.proj h3{margin:0 0 6px;font-size:20px;font-weight:800}
+.proj p{margin:0 0 12px;color:var(--muted);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.chips em{font-style:normal;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--tint-purple);color:var(--purple)}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800;font-size:14px;margin-top:6px}
+.flow span{padding:8px 14px;border-radius:99px}
+.flow u{text-decoration:none;color:var(--muted)}
+
+.contact{text-align:center}
+.contact a.big{display:block;font-size:clamp(22px,4vw,34px);font-weight:900;text-decoration:none;color:var(--purple);margin:6px 0 16px;word-break:break-all}
+footer{border-top:2px dotted var(--line);padding:22px 0 30px;text-align:center;color:var(--muted);font-size:14px}
+@media(prefers-reduced-motion:no-preference){.rainbow{background-size:200% 100%;animation:sl 1.4s ease-out both}@keyframes sl{from{background-position:100% 0}to{background-position:0 0}}}
+</style>
 </head>
 <body>
-    
+<nav><div class="wrap"><b>Your Name</b>
+<div class="links"><a class="l" href="#about">About</a><a class="l" href="#skills">Skills</a><a class="l" href="#projects">Projects</a><a class="l" href="#contact">Contact</a></div></div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="icons">
+    <div><span>💻</span>code</div><div><span>🎬</span>video</div><div><span>🎨</span>design</div>
+    <div><span>🤖</span>AI</div><div><span>📱</span>app</div><div><span>🧠</span>ideas</div>
+  </div>
+  <div class="title-box">
+    <h1 class="rainbow">PORTFOLIO</h1>
+    <div class="sub">Websites, apps and AI tools by Your Name</div>
+  </div>
+  <p class="tag">Learn how I build things, one clear picture at a time.</p>
+  <div class="cta"><a class="btn fill" href="#projects">See my projects</a><a class="btn" href="#contact">Get in touch</a></div>
+  <div class="icons" style="margin-top:28px">
+    <div><span>🧩</span>puzzle</div><div><span>⚡</span>fast</div><div><span>🎯</span>goal</div>
+    <div><span>🌏</span>web</div><div><span>🛠️</span>build</div><div><span>🚀</span>launch</div>
+  </div>
+</div></header>
+
+<main>
+<section id="about"><div class="wrap">
+  <div class="sh"><i>01</i><h2>About me</h2></div>
+  <div class="about">
+    <div class="panel"><h3>1.1 Who I am</h3>
+      <p style="margin:0">Hi! I’m a student developer who turns ideas into working websites, apps and AI tools. Replace this paragraph with two or three sentences about your school, your interests and what you want to build next.</p>
+      <hr class="dots">
+      <div class="flow"><span class="p">Idea</span><u>›</u><span class="b">Design</span><u>›</u><span class="gr">Code</span><u>›</u><span class="o">Launch</span></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="stat p"><b style="color:var(--purple)">5</b><small>projects</small></div>
+      <div class="stat k"><b style="color:var(--pink)">3</b><small>web apps</small></div>
+      <div class="stat b"><b style="color:#16a8d8">2</b><small>AI tools</small></div>
+      <div class="stat o"><b style="color:var(--orange)">1</b><small>video reel</small></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+  <div class="sh"><i>02</i><h2>Skills</h2></div>
+  <div class="panel"><h3>2.1 What I work with</h3>
+    <div class="grid g5">
+      <div class="tile"><div class="p">🌐</div>HTML, CSS, JS</div>
+      <div class="tile"><div class="b">⚛️</div>React</div>
+      <div class="tile"><div class="gr">🐍</div>Python, FastAPI</div>
+      <div class="tile"><div class="k">✨</div>Gemini API</div>
+      <div class="tile"><div class="o">🎞️</div>Video editing</div>
+    </div>
+    <hr class="dots">
+    <h3>2.2 How I work</h3>
+    <div class="grid g5">
+      <div class="tile"><div class="y">👥</div>Teamwork</div>
+      <div class="tile"><div class="p">🎤</div>Presenting</div>
+      <div class="tile"><div class="gr">🔍</div>Research</div>
+      <div class="tile"><div class="k">🖌️</div>UI design</div>
+      <div class="tile"><div class="b">🧪</div>Testing</div>
+    </div>
+  </div>
+</div></section>
+
+<section id="projects"><div class="wrap">
+  <div class="sh"><i>03</i><h2>Projects</h2></div>
+  <div class="grid g3">
+    <article class="proj"><div class="top p">🎓</div><div class="body"><h3>Driven by EdTech</h3>
+      <p>Group 7 single-page site on AI in online learning, with a glass header, slide images and a video popup.</p>
+      <div class="chips"><em>HTML</em><em>CSS</em><em>JavaScript</em></div></div></article>
+    <article class="proj"><div class="top k">📱</div><div class="body"><h3>What’s Poppin’, Pinoy?</h3>
+      <p>A Balik 2000 presentation turned into an iPhone-mockup web app comparing Philippine pop culture then and now.</p>
+      <div class="chips"><em>Web app</em><em>Mockup UI</em></div></div></article>
+    <article class="proj"><div class="top b">🎞️</div><div class="body"><h3>PinClips AI Video Editor</h3>
+      <p>Chat with an AI to edit your timeline. Gemini returns structured JSON that the editor applies.</p>
+      <div class="chips"><em>FastAPI</em><em>React</em><em>Gemini</em></div></div></article>
+    <article class="proj"><div class="top o">🏃‍♀️</div><div class="body"><h3>Cathy Freeman Reel</h3>
+      <p>A 9:16 Instagram Reel about her Sydney 2000 400m race, built in the OpenReel editor.</p>
+      <div class="chips"><em>OpenReel</em><em>Video</em></div></div></article>
+    <article class="proj"><div class="top gr">💬</div><div class="body"><h3>Support Chat</h3>
+      <p>A customer support assistant with knowledge files, a file cache and a model fallback router.</p>
+      <div class="chips"><em>Gemini</em><em>FastAPI</em><em>CLI</em></div></div></article>
+  </div>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <div class="sh"><i>04</i><h2>Contact</h2></div>
+  <div class="panel contact"><h3>4.1 Say hello</h3>
+    <p style="margin:0">Want to work together or just chat about a project?</p>
+    <a class="big" href="mailto:you@example.com">you@example.com</a>
+    <div class="cta"><a class="btn fill" href="mailto:you@example.com">Send an email</a><a class="btn" href="#">GitHub</a><a class="btn" href="#">LinkedIn</a></div>
+  </div>
+</div></section>
+</main>
+<footer><div class="wrap">Made by Your Name · Swap in your own details and links</div></footer>
 </body>
 </html>
