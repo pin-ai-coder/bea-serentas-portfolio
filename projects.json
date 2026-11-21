@@ -1,6 +1,57 @@
 {
-  "skills": [],
+  "skills": [
+    "HTML",
+    "CSS",
+    "JAVASCRIPT",
+    "N8N",
+    "PYTHON",
+    "API",
+    "AUTOMATION",
+    "INTEGRATION"
+  ],
   "projects": [
-    
+    {
+      "id": "appointment-schedule",
+      "icon": "📌",
+      "tint": "blue",
+      "title": "Appointment Schedule",
+      "cover": "/n8n.png",
+      "tags": [
+        "HTML",
+        "CSS",
+        "JAVASCRIPT",
+        "N8N",
+        "PYTHON",
+        "API",
+        "AUTOMATION",
+        "INTEGRATION"
+      ],
+      "short": "Appointment scheduler using simple website and n8n with Google Sheets.",
+      "long": "",
+      "meta": {},
+      "blocks": [
+        {
+          "type": "video",
+          "src": "videos/simplescreenrecorder-2026-11-21_16.52.06.mp4",
+          "caption": "DEMO VIDEO OVERVIEW"
+        },
+        {
+          "type": "h",
+          "text": "Appointment Scheduler  - Website Application & Workflow Automation"
+        },
+        {
+          "type": "p",
+          "text": "<br><b>Project Category:</b> Web Application | AI Automation &amp; Integration<br><b>Technologies:</b> HTML, CSS, JavaScript, FastAPI, n8n, Webhooks, Google Sheets<br><br>The Appointment Scheduler is to automate the process of storing customer information from the submitted appointment.<br>The project combines&nbsp; website with an automated backend workflow. <br><br>This demonstrate how website application can communicate with external automation services to reduce manual data entry and improve business operations.<br><br>Customers can fill out an appointment form, submit their information, and have their data automatically forwarded through an n8n workflow and stored in Google Sheets.<br><b><br>Development Process</b><br>1. Frontend Development<br>The project started with building the customer-facing appointment scheduler using HTML, CSS, and JavaScript. The frontend provides an interface where customers can enter their personal information and appointment details. The form was designed to collect the required information and prepare it for submission through an HTTP POST request.<br><br>2. Backend and Server Configuration<br>After completing the initial frontend, I configured the local development servers and backend environment. FastAPI was used as the backend/API component, while the self-hosted n8n instance handled the automation workflow. An external tunnel was configured to make the locally hosted n8n webhook accessible to the website during development.<br><br>3. n8n Workflow Development<br>The next step was creating an automation workflow in n8n.<br>I configured a Webhook node to receive incoming HTTP requests from the appointment scheduler. The workflow was designed to receive the submitted appointment information and forward the data to Google Sheets.<br><br>4. Website-to-Automation Integration<br>After configuring the webhook, I connected the frontend to the external n8n endpoint. The website used JavaScript HTTP POST requests to send customer information to the webhook. During integration, I also configured Cross-Origin Resource Sharing (CORS) to allow the browser to communicate with the external service.<br>The initial connection was successfully established, allowing the website to communicate with the n8n workflow.<br><br>5. Google Sheets Integration<br>Once the webhook was receiving requests, I configured Google Sheets as the destination for submitted appointment records. The n8n workflow was connected to the spreadsheet, allowing incoming customer information to be automatically inserted into the corresponding columns. This eliminated the need to manually copy and transfer submitted appointment information.<br><br>6. Testing and Troubleshooting<br>During development, I encountered several configuration and integration errors involving the webhook, server connection, and Google Sheets workflow. Rather than treating these errors as setbacks, I used them as opportunities to test and refine the system.<br><br>In summary:<br>The website successfully sent HTTP POST requests.<br>The n8n webhook received the submitted information.<br>The workflow correctly forwarded the data.<br>Google Sheets stored each new appointment record.<br><br>The Appointment Scheduler demonstrated of an automated data submission pipeline:"
+        },
+        {
+          "type": "callout",
+          "text": "<b>Customer → Website Application → n8n Webhook → Google Sheets</b>"
+        },
+        {
+          "type": "p",
+          "text": "Every submitted appointment was automatically received and forwarded to the spreadsheet without requiring manual data entry.<br>The project demonstrates the practical integration of frontend development, backend services, webhooks, workflow automation, and data sheet.<br><br><b>Skills Demonstrated:<br></b>-Frontend development using HTML, CSS, and JavaScript<br>-Backend and API configuration using FastAPI<br>-HTTP POST request implementation<br>-Webhook configuration and integration<br>-n8n workflow development<br>-Google Sheets API integration<br>-CORS configuration<br>-External tunnel configuration<br>-Server management and troubleshooting<br>-End-to-end application testing<br><br><b>Project Reflection</b><br>This project shows how independent technologies can work together to create a functional business solution.<br><br><b>Project Status:</b><br>Initial integration completed and successfully tested in a development environment.<b></b>"
+        }
+      ]
+    }
   ]
 }

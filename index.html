@@ -67,7 +67,7 @@ h2{font-size:34px;font-weight:900;margin-bottom:8px;text-shadow:var(--textglow)}
 footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-size:14px;padding:18px;border-top:2px dotted var(--line)}
 
 /* PROJECT POP-UP (ARTICLE) */
-dialog{width:min(1180px,calc(100% - 24px));max-height:calc(100% - 32px);border:2px solid var(--line);border-radius:22px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 0 40px var(--g-purple);overflow:hidden}
+dialog{width:min(1180px,calc(100% - 24px));max-height:calc(100% - 32px);border:2px solid var(--line);border-radius:22px;padding:0;background:var(--card);color:var(--ink);overflow:hidden}
 dialog[open]{display:flex;flex-direction:column;animation:pop .25s ease}
 dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 @keyframes pop{from{opacity:0;transform:scale(.96)}}
@@ -75,7 +75,8 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 .dh b{font-size:14px;color:var(--purple)}
 .x{font:inherit;font-size:22px;line-height:1;width:36px;height:36px;border-radius:50%;border:0;background:var(--card);color:var(--ink);cursor:pointer}
 .x:focus-visible{outline:3px solid var(--purple)}
-.art{overflow-y:auto;padding:28px clamp(18px,5vw,64px) 36px}
+dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
+.art{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;outline:none;padding:28px clamp(18px,5vw,64px) 36px}
 .ah{display:grid;gap:12px;padding-bottom:22px;border-bottom:2px dotted var(--line)}
 .ah h3{font-size:clamp(28px,5vw,40px);font-weight:900;letter-spacing:-.01em}
 .lede{margin:0;font-size:19px;color:var(--muted)}
@@ -87,7 +88,8 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 .abody>*{margin:0;min-width:0}
 .abody h4{font-size:24px;font-weight:900;margin-top:14px}
 .abody p,.abody li{font-size:17px}
-.abody a{color:var(--purple);font-weight:700}
+.abody a,.lede a{color:var(--purple);font-weight:700}
+.abody :not(pre)>code,.lede code{background:var(--tint-purple);padding:1px 6px;border-radius:6px;font-size:.92em}
 .abody ul{padding-left:22px;display:grid;gap:6px}
 .abody figure{display:grid;gap:8px}
 .abody figure img,.abody figure video{width:100%;height:auto;border-radius:14px;border:2px solid var(--line);display:block}
@@ -99,7 +101,7 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 .callout{padding:16px 20px;border-radius:14px;background:var(--tint-yellow);border-left:5px solid var(--yellow)}
 .abody pre{margin:0;padding:16px;border-radius:14px;background:var(--tint-purple);overflow-x:auto;font-size:14px;line-height:1.5}
 .linkcard{display:block;text-decoration:none;color:inherit;padding:14px 18px;border-radius:14px;border:2px solid var(--line);background:var(--card);transition:border-color .2s,box-shadow .2s}
-.linkcard:hover,.linkcard:focus-visible{border-color:var(--purple);box-shadow:0 0 16px var(--g-purple);outline:none}
+.linkcard:hover,.linkcard:focus-visible{border-color:var(--purple);outline:none}
 .linkcard b{display:block;color:var(--purple)}
 .linkcard span{font-size:14px;color:var(--muted)}
 .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px;padding-top:22px;border-top:2px dotted var(--line)}
@@ -163,7 +165,7 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
     <div class="txt">
       <h1>Hi! My name is <br>Bea Serentas.</h1>
       <div class="name"><h2>I do AI automation and integration + website applications</h2></div>
-      <p>I coonnect the right tools to the right problems. Technically, ready to ready to build with your ideas.</p>
+      <p>I connect the right tools to the right problems. Technically, ready to build with your ideas.</p>
       <a class="btn" href="#projects">See my projects</a>
       <a class="btn alt" href="#contact">Have something to work with?</a>
     </div>
@@ -175,8 +177,8 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 <section id="about"><div class="w about">
   <div>
     <h2>About me</h2>
-    <p>Different tools, different problems to solve. Pick what fits, wire together, and ship.</p>
-    <ul class="love"><li>ai + web app.</li><li>integrate.</li><li>systems.</li></ul>
+    <p>Different tools, different problems to solve. I pick what fits, wire it together, and ship ideas to creation.</p>
+    <ul class="love"><li>I love coding.</li><li>I love problem-solving.</li><li>I love systems.</li></ul>
   </div>
   <div id="skills" class="stack" aria-label="How my skills connect">
     <div class="node">Websites<small>HTML · CSS · JavaScript</small></div>
@@ -191,10 +193,10 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 <!-- PROJECTS -->
 <section id="projects"><div class="w">
   <h2>Projects</h2>
-  
+  <p class="sub">Pick a skill to filter by the tools used. Select a card for the full overview.</p>
   <div class="chips" id="chips" role="group" aria-label="Filter projects by skill"></div>
   <div class="grid" id="grid"></div>
-  <p class="empty" id="empty" hidden>Updating changes for the projects section...</p>
+  <p class="empty" id="empty" hidden>No projects use that tool yet.</p>
 </div></section>
 
 <!-- ON ABOARD -->
@@ -225,7 +227,7 @@ dialog::backdrop{background:rgba(15,15,35,.55);backdrop-filter:blur(3px)}
 <!-- PROJECT ARTICLE POP-UP -->
 <dialog id="dlg" aria-labelledby="dt">
   <div class="dh"><b>Project overview</b><button class="x" id="close" type="button" aria-label="Close">×</button></div>
-  <article class="art" id="art">
+  <article class="art" id="art" tabindex="-1">
     <header class="ah">
       <div class="tags" id="dtags"></div>
       <h3 id="dt"></h3>
@@ -357,7 +359,7 @@ const renderers = {
 
 function openProject(p) {
   document.getElementById("dt").textContent = p.title;
-  document.getElementById("dd").textContent = p.long || p.short;
+  document.getElementById("dd").innerHTML = p.long || p.short;
   document.getElementById("dtags").innerHTML = p.tags.map(t => '<span class="tag">' + t + '</span>').join("");
 
   const meta = document.getElementById("dmeta");
@@ -379,6 +381,7 @@ function openProject(p) {
 
   art.scrollTop = 0;
   dlg.showModal();
+  art.focus({ preventScroll: true });
 }
 document.getElementById("close").onclick = () => dlg.close();
 dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
