@@ -15,7 +15,7 @@
       "icon": "📌",
       "tint": "blue",
       "title": "Appointment Schedule",
-      "cover": "/n8n.png",
+      "cover": "pic/n8n.png",
       "tags": [
         "HTML",
         "CSS",
@@ -32,7 +32,7 @@
       "blocks": [
         {
           "type": "video",
-          "src": "videos/simplescreenrecorder-2026-11-21_16.52.06.mp4",
+          "src": "videos/proj_1.mp4",
           "caption": "DEMO VIDEO OVERVIEW"
         },
         {
