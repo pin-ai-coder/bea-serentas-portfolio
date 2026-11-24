@@ -141,6 +141,18 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
 .ob h3{font-size:20px;font-weight:900;margin-bottom:8px}
 .ob p{margin:0;color:var(--muted)}
 .ob.a{background:var(--tint-blue)}.ob.b{background:var(--tint-pink)}
+
+/* CONTACT FORM */
+.cf{max-width:560px;margin:0 auto;text-align:left}
+.cf .field{margin-bottom:16px}
+.cf label{display:block;font-weight:800;font-size:15px;margin-bottom:6px}
+.cf input,.cf textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 16px;transition:border-color .2s,box-shadow .2s}
+.cf input:focus,.cf textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 16px var(--g-purple)}
+.cf textarea{min-height:150px;resize:vertical}
+.cf .chips{margin:12px 0 0}
+.cf .btn{border:0;cursor:pointer;font:inherit;font-weight:800;display:block;margin:22px auto 0}
+.cf-status{text-align:center;margin-top:12px;font-size:15px;min-height:1.5em;color:var(--muted)}
+.cf-status.err{color:var(--pink)}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
 <title>Bea Serentas - Pin AI Coder</title>
@@ -211,9 +223,27 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
 
 <!-- CONTACT -->
 <section id="contact" class="contact"><div class="w">
-  <h2>Let’s build something together</h2>
+  <h2 id="cf-greet">Let’s build something together</h2>
   <p class="sub">Have a workflow to automate or a site to launch? Tell me about it.</p>
-  <a class="btn" href="mailto:hello@example.com">Email me</a>
+
+  <div class="cf">
+    <div class="field">
+      <label for="cf-name">Your name</label>
+      <input id="cf-name" autocomplete="name" placeholder="Maria Santos">
+    </div>
+    <div class="field">
+      <label for="cf-email">Your email</label>
+      <input id="cf-email" type="email" autocomplete="email" placeholder="maria@company.com">
+    </div>
+    <div class="field">
+      <label for="cf-msg">Message</label>
+      <textarea id="cf-msg" placeholder="Tell me about your project…"></textarea>
+      <div class="chips" id="cf-chips" aria-label="Quick messages"></div>
+    </div>
+    <button class="btn" id="cf-send" type="button">Send via Gmail</button>
+    <div class="cf-status" id="cf-status" role="status"></div>
+  </div>
+
   <div class="more">
     <a class="btn alt" href="https://github.com/pin-ai-coder">GitHub</a>
     <a class="btn alt" href="https://www.linkedin.com/in/bea-serentas-pin-ai-coder">LinkedIn</a>
@@ -406,6 +436,53 @@ fetch("projects.json", { cache: "no-cache" })
     empty.textContent = "Couldn't load projects.json. Keep it next to index.html and open the site through a web server or your host (browsers block file:// loading).";
     empty.hidden = false;
   });
+</script>
+
+<!-- CONTACT FORM SCRIPT -->
+<script>
+var MY_EMAIL = "youremail@gmail.com"; // ✏️ put YOUR Gmail here
+
+var templates = [
+  {label:"Quote request", text:"Hi! I have a project and would like a quote. Could we schedule a quick call to discuss scope, timeline, and budget?"},
+  {label:"Check availability", text:"Hello! Are you available for a new project starting soon? I’d love to share the details and see if we’re a fit."},
+  {label:"Long-term work", text:"Hi! I’m looking for a reliable freelancer for ongoing work. Can we talk about your rates and availability?"}
+];
+var cfMsg=document.getElementById("cf-msg"), cfChips=document.getElementById("cf-chips"),
+    cfStatus=document.getElementById("cf-status"), cfGreet=document.getElementById("cf-greet"),
+    cfBase=cfGreet.textContent;
+
+document.getElementById("cf-name").addEventListener("input",function(){
+  var v=this.value.trim();
+  cfGreet.textContent=v?"Hai "+v+"! "+cfBase:cfBase;
+});
+
+templates.forEach(function(t){
+  var b=document.createElement("button");
+  b.type="button"; b.className="chip"; b.textContent=t.label; b.setAttribute("aria-pressed","false");
+  b.onclick=function(){
+    cfMsg.value=t.text;
+    cfChips.querySelectorAll(".chip").forEach(function(c){c.setAttribute("aria-pressed","false")});
+    b.setAttribute("aria-pressed","true"); cfMsg.focus();
+  };
+  cfChips.appendChild(b);
+});
+
+document.getElementById("cf-send").onclick=function(){
+  var n=document.getElementById("cf-name").value.trim(),
+      e=document.getElementById("cf-email").value.trim(),
+      m=cfMsg.value.trim();
+  cfStatus.className="cf-status";
+  if(!n||!/^\S+@\S+\.\S+$/.test(e)||!m){
+    cfStatus.className="cf-status err";
+    cfStatus.textContent="Please add your name, a valid email, and a message.";
+    return;
+  }
+  var url="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(MY_EMAIL)+
+    "&su="+encodeURIComponent("Project inquiry from "+n)+
+    "&body="+encodeURIComponent(m+"\n\nFrom: "+n+"\nReply to: "+e);
+  var w=window.open(url,"_blank","noopener");
+  cfStatus.textContent=w?"Gmail opened with your message ready. Press Send there.":"Pop-up blocked. Allow pop-ups and try again.";
+};
 </script>
 </body>
 </html>
