@@ -46,8 +46,9 @@ h2{font-size:34px;font-weight:700;margin-bottom:8px;text-shadow:var(--textglow)}
 .btn.alt{background:var(--tint-purple);color:var(--purple);box-shadow:none}
 .hero-in{display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap}
 .hero-in .txt{flex:1 1 380px}
-.avatar{order:2;flex:none;width:300px;height:300px;padding:6px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink),var(--orange));box-shadow:0 0 34px var(--g-purple)}
-.avatar .ph{width:100%;height:100%;border-radius:50%;background:var(--tint-purple) center/cover no-repeat;border:5px solid var(--bg);display:grid;place-items:center;font-size:64px;font-weight:700;color:var(--purple)}
+.hero .btn{margin:8px 12px 8px 0}
+.avatar{order:2;flex:none;width:300px;height:300px;border-radius:50%;box-shadow:0 0 34px var(--g-purple)}
+.avatar .ph{width:100%;height:100%;border-radius:50%;background:var(--tint-purple) center/cover no-repeat;border:3px solid var(--line);display:grid;place-items:center;font-size:64px;font-weight:700;color:var(--purple)}
 @media (max-width:760px){.avatar{order:0;width:180px;height:180px}.avatar .ph{font-size:48px}}
 .about{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
 .about h2{margin-bottom:14px}
@@ -80,6 +81,8 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
 .ah{display:grid;gap:12px;padding-bottom:22px;border-bottom:2px dotted var(--line)}
 .ah h3{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-.01em}
 .lede{margin:0;font-size:19px;color:var(--muted)}
+.cover-hero{margin:-4px 0 4px;border-radius:14px;overflow:hidden;border:2px solid var(--line)}
+.cover-hero img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
 .meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin:6px 0 0}
 .meta div{min-width:90px}
 .meta dt{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--purple)}
@@ -135,6 +138,26 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
 .t-purple{background:var(--tint-purple)}.t-pink{background:var(--tint-pink)}.t-blue{background:var(--tint-blue)}
 .t-orange{background:var(--tint-orange)}.t-green{background:var(--tint-green)}.t-yellow{background:var(--tint-yellow)}
 .empty{color:var(--muted);padding:24px 0}
+
+/* See more (Done column) + more-projects dialog */
+.see-more{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;min-height:72px;padding:10px 12px;border:1.5px dashed var(--line);
+  border-radius:12px;background:var(--bg);color:var(--muted);cursor:pointer;
+  font:inherit;font-weight:600;font-size:13px;transition:border-color .2s,color .2s,background .2s;
+}
+.see-more:hover,.see-more:focus-visible{
+  border-color:var(--purple);color:var(--purple);background:color-mix(in srgb,var(--card) 92%,var(--purple));outline:none;
+}
+.see-more .plus{font-size:22px;line-height:1;font-weight:400;color:var(--purple)}
+.more-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.more-grid .pc{border:1.5px solid var(--line);border-radius:12px;box-shadow:none;transform:none;background:var(--bg)}
+.more-grid .pc:hover,.more-grid .pc:focus-visible{border-color:var(--purple);box-shadow:0 2px 10px rgba(0,0,0,.12);background:var(--bg)}
+.more-grid .pc .cover{padding:8px 8px 0}
+.more-grid .pc .cover img{aspect-ratio:16/9;border-radius:8px}
+.more-grid .pc .body{padding:10px 12px 12px}
+.more-grid .pc h3{font-size:15px;font-weight:600}
+.more-grid .pc p{font-size:12.5px;-webkit-line-clamp:2}
 
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
 .ob{border-radius:18px;padding:26px;min-height:180px;border:2px solid var(--line)}
@@ -487,6 +510,9 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
   <div class="dh"><b>Project overview</b><button class="x" id="close" type="button" aria-label="Close">×</button></div>
   <article class="art" id="art" tabindex="-1">
     <header class="ah">
+      <div class="cover-hero" id="dcover" hidden>
+        <img id="dcover-img" alt="" loading="lazy">
+      </div>
       <div class="tags" id="dtags"></div>
       <h3 id="dt"></h3>
       <p class="lede" id="dd"></p>
@@ -495,6 +521,15 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
     <div class="abody" id="dbody"></div>
     <footer class="acts" id="da"></footer>
   </article>
+</dialog>
+
+<!-- MORE DONE PROJECTS POP-UP -->
+<dialog id="more-dlg" aria-labelledby="more-title">
+  <div class="dh"><b id="more-title">More shipped projects</b><button class="x" id="more-close" type="button" aria-label="Close">×</button></div>
+  <div class="art" style="padding:20px 24px 28px;overflow-y:auto;">
+    <p class="sub" style="margin-bottom:18px;" id="more-sub">Other projects in Done</p>
+    <div class="more-grid" id="more-grid"></div>
+  </div>
 </dialog>
 
 <script>
@@ -548,6 +583,32 @@ function statusOf(p) {
 }
 const lblIdx = g => [...plain(g)].reduce((n, ch) => n + ch.charCodeAt(0), 0) % 6;
 const plain = s => String(s || "").replace(/<[^>]*>/g, "");
+const DONE_LIMIT = 2; // preview this many cards in the Done column
+
+function makeProjectCard(p) {
+  const c = document.createElement("button");
+  c.className = "pc"; c.type = "button";
+  const lbls = (p.tags || []).map(g => '<span class="lbl l' + lblIdx(g) + '">' + g + '</span>').join("");
+  c.innerHTML = (p.cover ? '<div class="cover"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></div>' : '') +
+    '<div class="body"><h3>' + (p.icon ? '<span class="ic">' + p.icon + '</span>' : '') + p.title + '</h3><p>' + p.short + '</p>' +
+    (lbls ? '<div class="lbls">' + lbls + '</div>' : '') + '</div>';
+  c.onclick = () => openProject(p);
+  return c;
+}
+
+function openMoreDone(allDone) {
+  const moreDlg = document.getElementById("more-dlg");
+  const moreGrid = document.getElementById("more-grid");
+  const moreSub = document.getElementById("more-sub");
+  moreGrid.innerHTML = "";
+  const count = allDone.length;
+  moreSub.textContent = count === 0
+    ? "No projects in Done yet"
+    : count + " project" + (count === 1 ? "" : "s") + " in Done";
+  allDone.forEach(p => moreGrid.appendChild(makeProjectCard(p)));
+  moreDlg.showModal();
+}
+
 function renderCards() {
   grid.innerHTML = "";
   const list = projects.filter(p => active === "All" || p.tags.includes(active));
@@ -563,15 +624,27 @@ function renderCards() {
       '<h3 class="khead"><span class="kico" aria-hidden="true">' + NODE[key][0] + '</span><span class="kname"><b>' + label + '</b><small>' + NODE[key][1] + '</small></span><span class="kcount">' + items.length + '</span></h3>';
     const lane = document.createElement("div");
     lane.className = "klist";
-    items.forEach(p => {
-      const c = document.createElement("button");
-      c.className = "pc"; c.type = "button";
-      const lbls = (p.tags || []).map(g => '<span class="lbl l' + lblIdx(g) + '">' + g + '</span>').join("");
-      c.innerHTML = (p.cover ? '<div class="cover"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></div>' : '') + '<div class="body"><h3>' + (p.icon ? '<span class="ic">' + p.icon + '</span>' : '') + p.title + '</h3><p>' + p.short + '</p>' + (lbls ? '<div class="lbls">' + lbls + '</div>' : '') + '</div>';
-      c.onclick = () => openProject(p);
-      lane.appendChild(c);
-    });
-    if (!items.length) { const e = document.createElement("div"); e.className = "kempty"; e.textContent = "No projects"; lane.appendChild(e); }
+
+    // In Done: show a short preview, then always show the "See more" button
+    const visible = key === "done" ? items.slice(0, DONE_LIMIT) : items;
+
+    visible.forEach(p => lane.appendChild(makeProjectCard(p)));
+
+    if (key === "done") {
+      const sm = document.createElement("button");
+      sm.className = "see-more"; sm.type = "button";
+      sm.innerHTML = '<span class="plus" aria-hidden="true">+</span><span>See more</span>';
+      sm.setAttribute("aria-label", "See all done projects");
+      sm.onclick = () => openMoreDone(items);
+      lane.appendChild(sm);
+    }
+
+    if (!items.length && key !== "done") {
+      const e = document.createElement("div");
+      e.className = "kempty";
+      e.textContent = "No projects";
+      lane.appendChild(e);
+    }
     col.appendChild(lane);
     grid.appendChild(col);
   });
@@ -666,7 +739,20 @@ const renderers = {
 function openProject(p) {
   document.getElementById("dt").textContent = p.title;
   document.getElementById("dd").innerHTML = p.long || p.short;
-  document.getElementById("dtags").innerHTML = p.tags.map(t => '<span class="tag">' + t + '</span>').join("");
+  document.getElementById("dtags").innerHTML = (p.tags || []).map(t => '<span class="tag">' + t + '</span>').join("");
+
+  // Cover photo
+  const coverWrap = document.getElementById("dcover");
+  const coverImg = document.getElementById("dcover-img");
+  if (p.cover) {
+    coverImg.src = p.cover;
+    coverImg.alt = p.title || "";
+    coverWrap.hidden = false;
+  } else {
+    coverImg.removeAttribute("src");
+    coverImg.alt = "";
+    coverWrap.hidden = true;
+  }
 
   const meta = document.getElementById("dmeta");
   meta.innerHTML = "";
@@ -691,7 +777,18 @@ function openProject(p) {
 }
 document.getElementById("close").onclick = () => dlg.close();
 dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-dlg.addEventListener("close", () => { dbody.innerHTML = ""; });
+dlg.addEventListener("close", () => {
+  dbody.innerHTML = "";
+  const coverWrap = document.getElementById("dcover");
+  const coverImg = document.getElementById("dcover-img");
+  if (coverWrap) coverWrap.hidden = true;
+  if (coverImg) { coverImg.removeAttribute("src"); coverImg.alt = ""; }
+});
+
+const moreDlg = document.getElementById("more-dlg");
+document.getElementById("more-close").onclick = () => moreDlg.close();
+moreDlg.addEventListener("click", e => { if (e.target === moreDlg) moreDlg.close(); });
+moreDlg.addEventListener("close", () => { document.getElementById("more-grid").innerHTML = ""; });
 
 /* Profile photo */
 const PHOTO = "pic.png";
