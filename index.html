@@ -482,10 +482,10 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
 </defs></svg>
 
 <div id="cb" data-side="left">
-  <section id="cb-panel" aria-label="Chat with Pin" aria-hidden="true">
+  <section id="cb-panel" aria-label="AI Chatbot" aria-hidden="true">
     <div class="cb-head">
       <div class="cb-av"><svg viewBox="100 280 1300 940"><use href="#cb-mascot"/></svg></div>
-      <div><b>Pin, Bea’s assistant</b><small>Ask about her work</small></div>
+      <div><b>AI Chatbot</b><small>Ask about Bea’s work</small></div>
       <button class="cb-x" id="cb-close" type="button" aria-label="Close chat">×</button>
     </div>
     <div id="cb-log" aria-live="polite"></div>
@@ -496,10 +496,10 @@ dialog .btn,dialog .btn:hover,dialog .btn:focus-visible{box-shadow:none}
     </form>
   </section>
   <div id="cb-tip" role="status">
-    <button id="cb-tip-open" type="button"><b>Hai! 👋</b> I’m Pin, Bea’s assistant. Need help finding her projects, skills or contact info? Click me and ask.</button>
+    <button id="cb-tip-open" type="button"><b>Hai! 👋</b> I’m Bea’s AI chatbot. Need help finding her projects, skills or contact info? Click me and ask.</button>
     <button id="cb-tip-x" type="button" aria-label="Dismiss message">×</button>
   </div>
-  <button id="cb-launch" type="button" aria-label="Chat with Pin" aria-expanded="false">
+  <button id="cb-launch" type="button" aria-label="Chat with AI Chatbot" aria-expanded="false">
     <svg viewBox="100 280 1300 940"><use href="#cb-mascot"/></svg>
     <span id="cb-dot"></span>
   </button>
@@ -1066,12 +1066,13 @@ cfSend.addEventListener("click", async function () {
     return '<br><a class="cb-go" href="'+href+'">'+label+'</a>';
   }
 
-  /* ✏️ Edit these answers to match what you want Pin to say */
+  /* ✏️ Edit these answers to match what you want the chatbot to say.
+     Order matters: the first matching rule wins. */
   var answers=[
     {k:/project|work|portfolio|built|case/i,t:"Bea builds AI automations, workflows, agents and website applications. Filter by tool and open any card for the full story.",a:["See projects","#projects"]},
     {k:/skill|tool|stack|n8n|make|zapier|api|html|js|javascript|llm/i,t:"Her toolkit: websites (HTML, CSS, JavaScript), automation (n8n, Make, Zapier), AI (LLM APIs, prompts, agents) and integrations (APIs, webhooks, data).",a:["See skills","#skills"]},
-    {k:/about|who|bea|pin/i,t:"Bea picks the right tool for each problem, wires it together and ships the idea. Different tools, different problems to solve.",a:["About Bea","#about"]},
     {k:/hire|quote|price|cost|rate|available|freelance|contact|email|talk|reach/i,t:"Great! Tell Bea about your workflow or site and she will reply by email.",a:["Contact Bea","#contact"]},
+    {k:/about|who|bea|what do you do|chatbot/i,t:"Bea picks the right tool for each problem, wires it together and ships the idea. Different tools, different problems to solve.",a:["About Bea","#about"]},
     {k:/resume|cv/i,t:"You can find Bea’s resume in the links at the bottom of the contact section.",a:["Go to links","#contact"]},
     {k:/youtube|video|github|linkedin|social/i,t:"GitHub, LinkedIn and YouTube links are at the bottom of the contact section.",a:["Go to links","#contact"]},
     {k:/hi|hello|hey|hai/i,t:"Hai! Nice to meet you. What would you like to know about Bea’s work?"},
@@ -1089,10 +1090,10 @@ cfSend.addEventListener("click", async function () {
   function send(text){
     text=text.trim();if(!text)return;
     var d=document.createElement("div");d.className="cb-m me";d.textContent=text;
-    log.appendChild(d);chips.innerHTML="";respond(text);
+    log.appendChild(d);respond(text);   /* chips are NOT cleared, so the quick options stay visible */
   }
   function greet(){
-    add("Hai! I’m Pin, Bea’s assistant. I can show you her projects, skills or how to reach her.","bot");
+    add("Hai! I’m Bea’s AI chatbot. I can show you her projects, skills or how to reach her.","bot");
     ["What do you do?","See projects","Contact Bea"].forEach(function(c){
       var b=document.createElement("button");b.type="button";b.className="cb-chip";b.textContent=c;
       b.onclick=function(){send(c)};chips.appendChild(b);
