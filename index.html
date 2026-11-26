@@ -813,51 +813,128 @@ fetch("projects.json", { cache: "no-cache" })
 
 <!-- CONTACT FORM SCRIPT -->
 <script>
-var MY_EMAIL = "youremail@gmail.com"; // ✏️ put YOUR Gmail here
+const API_URL = "https://porfolio-backend-email-section.onrender.com";
 
 var templates = [
-  {label:"Quote request", text:"Hi! I have a project and would like a quote. Could we schedule a quick call to discuss scope, timeline, and budget?"},
-  {label:"Check availability", text:"Hello! Are you available for a new project starting soon? I’d love to share the details and see if we’re a fit."},
-  {label:"Long-term work", text:"Hi! I’m looking for a reliable freelancer for ongoing work. Can we talk about your rates and availability?"}
+  {
+    label: "Quote request",
+    text: "Hi! I have a project and would like a quote. Could we schedule a quick call to discuss scope, timeline, and budget?"
+  },
+  {
+    label: "Check availability",
+    text: "Hello! Are you available for a new project starting soon? I'd love to share the details and see if we're a fit."
+  },
+  {
+    label: "Long-term work",
+    text: "Hi! I'm looking for a reliable freelancer for ongoing work. Can we talk about your rates and availability?"
+  }
 ];
-var cfMsg=document.getElementById("cf-msg"), cfChips=document.getElementById("cf-chips"),
-    cfStatus=document.getElementById("cf-status"), cfGreet=document.getElementById("cf-greet"),
-    cfBase=cfGreet.textContent;
 
-document.getElementById("cf-name").addEventListener("input",function(){
-  var v=this.value.trim();
-  cfGreet.textContent=v?"Hai "+v+"! "+cfBase:cfBase;
+var cfMsg = document.getElementById("cf-msg");
+var cfChips = document.getElementById("cf-chips");
+var cfStatus = document.getElementById("cf-status");
+var cfGreet = document.getElementById("cf-greet");
+var cfBase = cfGreet.textContent;
+
+// Dynamic greeting
+document.getElementById("cf-name").addEventListener("input", function () {
+  var v = this.value.trim();
+  cfGreet.textContent = v ? "Hai " + v + "! " + cfBase : cfBase;
 });
 
-templates.forEach(function(t){
-  var b=document.createElement("button");
-  b.type="button"; b.className="chip"; b.textContent=t.label; b.setAttribute("aria-pressed","false");
-  b.onclick=function(){
-    cfMsg.value=t.text;
-    cfChips.querySelectorAll(".chip").forEach(function(c){c.setAttribute("aria-pressed","false")});
-    b.setAttribute("aria-pressed","true"); cfMsg.focus();
+// Message templates
+templates.forEach(function (t) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "chip";
+  b.textContent = t.label;
+  b.setAttribute("aria-pressed", "false");
+
+  b.onclick = function () {
+    cfMsg.value = t.text;
+
+    cfChips.querySelectorAll(".chip").forEach(function (c) {
+      c.setAttribute("aria-pressed", "false");
+    });
+
+    b.setAttribute("aria-pressed", "true");
+    cfMsg.focus();
   };
+
   cfChips.appendChild(b);
 });
 
-document.getElementById("cf-send").onclick=function(){
-  var n=document.getElementById("cf-name").value.trim(),
-      e=document.getElementById("cf-email").value.trim(),
-      m=cfMsg.value.trim();
-  cfStatus.className="cf-status";
-  if(!n||!/^\S+@\S+\.\S+$/.test(e)||!m){
-    cfStatus.className="cf-status err";
-    cfStatus.textContent="Please add your name, a valid email, and a message.";
+// Submit inquiry to FastAPI
+document.getElementById("cf-send").onclick = async function () {
+
+  var n = document.getElementById("cf-name").value.trim();
+  var e = document.getElementById("cf-email").value.trim();
+  var m = cfMsg.value.trim();
+
+  cfStatus.className = "cf-status";
+
+  if (!n || !/^\S+@\S+\.\S+$/.test(e) || !m) {
+    cfStatus.className = "cf-status err";
+    cfStatus.textContent = "Please add your name, a valid email, and a message.";
     return;
   }
-  var url="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(MY_EMAIL)+
-    "&su="+encodeURIComponent("Project inquiry from "+n)+
-    "&body="+encodeURIComponent(m+"\n\nFrom: "+n+"\nReply to: "+e);
-  var w=window.open(url,"_blank","noopener");
-  cfStatus.textContent=w?"Gmail opened with your message ready. Press Send there.":"Pop-up blocked. Allow pop-ups and try again.";
-};
-</script>
 
+  var button = this;
+  button.disabled = true;
+  button.textContent = "Processing...";
+
+  cfStatus.textContent = "Analyzing your inquiry...";
+
+  try {
+
+    const response = await fetch(`${API_URL}/email/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: n,
+        email: e,
+        message: m
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.detail || "Unable to submit inquiry.");
+    }
+
+    if (result.requires_human_assistance) {
+      cfStatus.textContent =
+        "Thank you! Your inquiry has been received and will be reviewed personally.";
+    } else if (result.email_sent) {
+      cfStatus.textContent =
+        "Thank you! Your inquiry was received and an email response has been sent.";
+    } else {
+      cfStatus.textContent =
+        "Your inquiry was received successfully.";
+    }
+
+    cfStatus.className = "cf-status success";
+
+  } catch (error) {
+
+    console.error("Email submission error:", error);
+
+    cfStatus.className = "cf-status err";
+    cfStatus.textContent =
+      "Unable to submit your inquiry. Please try again later.";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Send Message";
+
+  }
+};
+
+</script>
 <script>
 (function(){
   var cb=document.getElementById("cb"),log=document.getElementById("cb-log"),
