@@ -812,10 +812,15 @@ fetch("projects.json", { cache: "no-cache" })
 </script>
 
 <!-- CONTACT FORM SCRIPT -->
+
 <script>
 const API_URL = "https://porfolio-backend-email-section.onrender.com";
 
-var templates = [
+// =====================================
+// 1. MESSAGE TEMPLATES
+// =====================================
+
+const templates = [
   {
     label: "Quote request",
     text: "Hi! I have a project and would like a quote. Could we schedule a quick call to discuss scope, timeline, and budget?"
@@ -830,111 +835,212 @@ var templates = [
   }
 ];
 
-var cfMsg = document.getElementById("cf-msg");
-var cfChips = document.getElementById("cf-chips");
-var cfStatus = document.getElementById("cf-status");
-var cfGreet = document.getElementById("cf-greet");
-var cfBase = cfGreet.textContent;
+// =====================================
+// 2. GET HTML ELEMENTS
+// =====================================
 
-// Dynamic greeting
-document.getElementById("cf-name").addEventListener("input", function () {
-  var v = this.value.trim();
-  cfGreet.textContent = v ? "Hai " + v + "! " + cfBase : cfBase;
+const cfName = document.getElementById("cf-name");
+const cfEmail = document.getElementById("cf-email");
+const cfMsg = document.getElementById("cf-msg");
+const cfChips = document.getElementById("cf-chips");
+const cfStatus = document.getElementById("cf-status");
+const cfGreet = document.getElementById("cf-greet");
+const cfSend = document.getElementById("cf-send");
+
+const cfBase = cfGreet.textContent;
+
+// =====================================
+// 3. DYNAMIC GREETING
+// =====================================
+
+cfName.addEventListener("input", function () {
+  const name = this.value.trim();
+
+  cfGreet.textContent = name
+    ? "Hi " + name + "! " + cfBase
+    : cfBase;
 });
 
-// Message templates
-templates.forEach(function (t) {
-  var b = document.createElement("button");
-  b.type = "button";
-  b.className = "chip";
-  b.textContent = t.label;
-  b.setAttribute("aria-pressed", "false");
+// =====================================
+// 4. MESSAGE TEMPLATE BUTTONS
+// =====================================
 
-  b.onclick = function () {
-    cfMsg.value = t.text;
+templates.forEach(function (template) {
+  const button = document.createElement("button");
 
-    cfChips.querySelectorAll(".chip").forEach(function (c) {
-      c.setAttribute("aria-pressed", "false");
+  button.type = "button";
+  button.className = "chip";
+  button.textContent = template.label;
+  button.setAttribute("aria-pressed", "false");
+
+  button.addEventListener("click", function () {
+    cfMsg.value = template.text;
+
+    cfChips.querySelectorAll(".chip").forEach(function (chip) {
+      chip.setAttribute("aria-pressed", "false");
     });
 
-    b.setAttribute("aria-pressed", "true");
+    button.setAttribute("aria-pressed", "true");
     cfMsg.focus();
-  };
+  });
 
-  cfChips.appendChild(b);
+  cfChips.appendChild(button);
 });
 
-// Submit inquiry to FastAPI
-document.getElementById("cf-send").onclick = async function () {
+// =====================================
+// 5. FORM VALIDATION
+// =====================================
 
-  var n = document.getElementById("cf-name").value.trim();
-  var e = document.getElementById("cf-email").value.trim();
-  var m = cfMsg.value.trim();
+function validateForm(name, email, message) {
+  if (!name || !email || !message) {
+    return "Please complete all required fields.";
+  }
 
+  const emailPattern = /^\S+@\S+\.\S+$/;
+
+  if (!emailPattern.test(email)) {
+    return "Please enter a valid email address.";
+  }
+
+  if (message.length > 10000) {
+    return "Your message is too long.";
+  }
+
+  return null;
+}
+
+// =====================================
+// 6. SUBMIT INQUIRY TO FASTAPI
+// =====================================
+
+cfSend.addEventListener("click", async function () {
+
+  const name = cfName.value.trim();
+  const email = cfEmail.value.trim();
+  const message = cfMsg.value.trim();
+
+  // Reset status
   cfStatus.className = "cf-status";
+  cfStatus.textContent = "";
 
-  if (!n || !/^\S+@\S+\.\S+$/.test(e) || !m) {
+  // Validate input
+  const validationError = validateForm(name, email, message);
+
+  if (validationError) {
     cfStatus.className = "cf-status err";
-    cfStatus.textContent = "Please add your name, a valid email, and a message.";
+    cfStatus.textContent = validationError;
     return;
   }
 
-  var button = this;
-  button.disabled = true;
-  button.textContent = "Processing...";
+  // ===================================
+  // 7. CONSTRUCT JSON PAYLOAD
+  // ===================================
+
+  const payload = {
+    name: name,
+    email: email,
+    message: message
+  };
+
+  // Debug: inspect the JSON in browser console
+  console.log("Prepared Email Request:");
+  console.log(JSON.stringify(payload, null, 2));
+
+  // Disable button while processing
+  const originalButtonText = cfSend.textContent;
+
+  cfSend.disabled = true;
+  cfSend.textContent = "Processing...";
 
   cfStatus.textContent = "Analyzing your inquiry...";
 
   try {
 
+    // =================================
+    // 8. SEND REQUEST TO FASTAPI
+    // =================================
+
     const response = await fetch(`${API_URL}/email/submit`, {
       method: "POST",
+
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        name: n,
-        email: e,
-        message: m
-      })
+
+      body: JSON.stringify(payload)
     });
+
+    // =================================
+    // 9. RECEIVE FASTAPI RESPONSE
+    // =================================
 
     const result = await response.json();
 
+    console.log("FastAPI Response:", result);
+
     if (!response.ok) {
-      throw new Error(result.detail || "Unable to submit inquiry.");
+      throw new Error(
+        result.detail || "Unable to submit inquiry."
+      );
     }
 
+    // =================================
+    // 10. HANDLE RESPONSE
+    // =================================
+
     if (result.requires_human_assistance) {
+
       cfStatus.textContent =
         "Thank you! Your inquiry has been received and will be reviewed personally.";
+
     } else if (result.email_sent) {
+
       cfStatus.textContent =
         "Thank you! Your inquiry was received and an email response has been sent.";
+
     } else {
+
       cfStatus.textContent =
         "Your inquiry was received successfully.";
+
     }
 
     cfStatus.className = "cf-status success";
 
+    // =================================
+    // 11. OPTIONAL: RESET FORM
+    // =================================
+
+    // Uncomment after successful testing:
+    // cfName.value = "";
+    // cfEmail.value = "";
+    // cfMsg.value = "";
+    // cfGreet.textContent = cfBase;
+
   } catch (error) {
+
+    // =================================
+    // 12. ERROR HANDLING
+    // =================================
 
     console.error("Email submission error:", error);
 
     cfStatus.className = "cf-status err";
+
     cfStatus.textContent =
       "Unable to submit your inquiry. Please try again later.";
 
   } finally {
 
-    button.disabled = false;
-    button.textContent = "Send Message";
+    // Re-enable button
+    cfSend.disabled = false;
+    cfSend.textContent = originalButtonText;
 
   }
-};
 
+});
 </script>
+
 <script>
 (function(){
   var cb=document.getElementById("cb"),log=document.getElementById("cb-log"),
